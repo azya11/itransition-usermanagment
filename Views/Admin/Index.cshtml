@@ -1,0 +1,74 @@
+@model IEnumerable<UserManagmentApp.Models.User>
+
+@{
+    ViewBag.Title = "User Management";
+}
+
+<div class="container mt-5">
+    <h2>User Management</h2>
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-info" role="alert">
+            @TempData["StatusMessage"]
+        </div>
+    }
+    <form id="userActionsForm" method="post">
+        <div class="mb-2 d-flex align-items-center">
+            <button type="submit" formaction="/Admin/Block" class="btn btn-warning me-2" title="Block selected users">Block</button>
+            <button type="submit" formaction="/Admin/Unblock" class="btn btn-outline-success me-2" title="Unblock selected users">
+                <i class="bi bi-unlock"></i>
+            </button>
+            <button type="submit" formaction="/Admin/Delete" class="btn btn-outline-danger" title="Delete selected users">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+        <table class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" />
+                    </th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last Login</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="selectedIds" value="@user.Id" />
+                        </td>
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@(user.LastLoginTime?.ToString("g") ?? "Never")</td>
+                        <td>
+                            @if (user.Status == UserManagmentApp.Models.UserStatus.Active)
+                            {
+                                <span class="badge bg-success" title="Active">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger" title="Blocked">Blocked</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Select/Deselect all checkboxes
+        document.getElementById('selectAll').addEventListener('change', function () {
+            var checkboxes = document.querySelectorAll('input[name="selectedIds"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+    </script>
+}

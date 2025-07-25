@@ -1,5 +1,7 @@
 using UserManagmentApp.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using UserManagmentApp.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
     });
+
+builder.Services.AddScoped<UserStatusCheckFilter>();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<UserStatusCheckFilter>();
+});
 
 var app = builder.Build();
 
