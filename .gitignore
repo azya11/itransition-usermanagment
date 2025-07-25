@@ -1,0 +1,12 @@
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.db
+*.sqlite
+appsettings.Development.json
+appsettings.Local.json
+.env
