@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using UserManagmentApp.Data;
 using UserManagmentApp.Models;
+using Microsoft.AspNetCore.Authentication;
 
 namespace UserManagmentApp.Filters
 {
