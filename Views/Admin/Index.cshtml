@@ -1,37 +1,33 @@
 @model IEnumerable<UserManagmentApp.Models.User>
-
 @{
     ViewBag.Title = "User Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<div class="container mt-5">
-    <h2>User Management</h2>
-    @if (TempData["StatusMessage"] != null)
-    {
-        <div class="alert alert-info" role="alert">
-            @TempData["StatusMessage"]
-        </div>
-    }
+<div class="container py-5">
+    <h2 class="mb-4 fw-bold">User Management</h2>
     <form id="userActionsForm" method="post">
-        <div class="mb-2 d-flex align-items-center">
-            <button type="submit" formaction="/Admin/Block" class="btn btn-warning me-2" title="Block selected users">Block</button>
-            <button type="submit" formaction="/Admin/Unblock" class="btn btn-outline-success me-2" title="Unblock selected users">
-                <i class="bi bi-unlock"></i>
+        <div class="d-flex mb-3">
+            <button type="submit" formaction="/Admin/Block" class="btn btn-secondary me-2" id="blockBtn" disabled>Block</button>
+            <button type="submit" formaction="/Admin/Unblock" class="btn btn-outline-success me-2" id="unblockBtn" disabled>
+                <i class="bi bi-hand-thumbs-up"></i> Unblock
             </button>
-            <button type="submit" formaction="/Admin/Delete" class="btn btn-outline-danger" title="Delete selected users">
-                <i class="bi bi-trash"></i>
+            <button type="submit" formaction="/Admin/Delete" class="btn btn-outline-danger" id="deleteBtn" disabled>
+                <i class="bi bi-trash"></i> Delete
             </button>
+            <div class="ms-auto">
+                <input type="text" class="form-control" placeholder="Search users..." style="width: 200px; display: inline-block;" />
+                <button class="btn btn-outline-secondary ms-2">Filter</button>
+            </div>
         </div>
-        <table class="table table-bordered table-hover align-middle">
+        <table class="table table-hover align-middle">
             <thead>
                 <tr>
-                    <th>
-                        <input type="checkbox" id="selectAll" />
-                    </th>
+                    <th><input type="checkbox" id="selectAll" /></th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Last Login</th>
+                    <th>Last seen</th>
                     <th>Status</th>
+                    <th>Activity</th>
                 </tr>
             </thead>
             <tbody>
@@ -39,20 +35,29 @@
                 {
                     <tr>
                         <td>
-                            <input type="checkbox" name="selectedIds" value="@user.Id" />
+                            <input type="checkbox" name="selectedIds" value="@user.Id" class="user-checkbox" />
                         </td>
-                        <td>@user.Name</td>
+                        <td>
+                            <strong>@user.Name</strong><br />
+                            <span class="text-muted small">N/A</span>
+                        </td>
                         <td>@user.Email</td>
-                        <td>@(user.LastLoginTime?.ToString("g") ?? "Never")</td>
+                        <td>
+                            <i class="bi bi-clock"></i>
+                            @(user.LastLoginTime.HasValue ? user.LastLoginTime.Value.ToString("g") : "Never")
+                        </td>
                         <td>
                             @if (user.Status == UserManagmentApp.Models.UserStatus.Active)
                             {
-                                <span class="badge bg-success" title="Active">Active</span>
+                                <span class="badge bg-success">Active</span>
                             }
                             else
                             {
-                                <span class="badge bg-danger" title="Blocked">Blocked</span>
+                                <span class="badge bg-secondary">Inactive</span>
                             }
+                        </td>
+                        <td>
+                            <span class="text-muted">[activity]</span>
                         </td>
                     </tr>
                 }
@@ -62,13 +67,21 @@
 </div>
 
 @section Scripts {
-    <script>
-        // Select/Deselect all checkboxes
-        document.getElementById('selectAll').addEventListener('change', function () {
-            var checkboxes = document.querySelectorAll('input[name="selectedIds"]');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-    </script>
+<script>
+    function updateActionButtons() {
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        document.getElementById('blockBtn').disabled = !anyChecked;
+        document.getElementById('unblockBtn').disabled = !anyChecked;
+        document.getElementById('deleteBtn').disabled = !anyChecked;
+    }
+    document.querySelectorAll('.user-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateActionButtons);
+    });
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const checked = this.checked;
+        document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = checked);
+        updateActionButtons();
+    });
+</script>
 }

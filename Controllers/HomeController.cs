@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using UserManagmentApp.Models;
 
 namespace UserManagmentApp.Controllers;
@@ -15,6 +16,12 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        // Redirect to login if user is not authenticated
+        if (!User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+        
         return View();
     }
 

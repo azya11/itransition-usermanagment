@@ -1,18 +1,44 @@
 @model UserManagmentApp.Models.LoginViewModel
-
-<div class="container mt-5" style="max-width: 400px;">
-    <h2>Login</h2>
-    <form asp-action="Login" method="post">
-        <div class="mb-3">
-            <label asp-for="Email" class="form-label"></label>
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container d-flex align-items-center justify-content-center min-vh-100" style="background: #f8f9fa;">
+    <div class="row w-100">
+        <div class="col-md-6 mx-auto">
+            <div class="card shadow p-4">
+                <h2 class="text-primary fw-bold mb-2">THE APP</h2>
+                <p class="mb-1 text-muted">Start your journey</p>
+                <h4 class="mb-4">Sign In to The App</h4>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">@ViewBag.Error</div>
+                }
+                <form asp-action="Login" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">E-mail</label>
+                        <input asp-for="Email" class="form-control" placeholder="test@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" class="form-control" type="password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" />
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="mb-0 text-muted">Don't have an account?</p>
+                    <a asp-action="Register" class="btn btn-outline-primary mt-2">Create Account</a>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label asp-for="Password" class="form-label"></label>
-            <input asp-for="Password" class="form-control" type="password" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+    </div>
 </div>
